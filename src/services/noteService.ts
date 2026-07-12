@@ -16,12 +16,9 @@ export interface FetchNotesParams {
 
 export interface FetchNotesResponse {
   notes: Note[];
-  totalNotes: number;
   totalPages: number;
-  currentPage: number;
 }
 
-// Оголошено головну функцію з експортом за замовчуванням
 export default function noteService() {
   const noteInstance = axios.create({
     baseURL: BASE_URL,
@@ -51,7 +48,7 @@ export default function noteService() {
       return response.data;
     },
 
-    // Повернення об'єкту видаленої нотатки "Note": тобто, коли додаток відправляє запит на видалення нотатки, сервер NoteHub у відповідь повертає повний об'єкт цієї нотатки, яку щойно видалили (з її ID, заголовком, текстом і тегом).
+    // Повернення об'єкту видаленої нотатки "Note": коли додаток відправляє запит на видалення нотатки, сервер NoteHub у відповідь повертає повний об'єкт цієї нотатки, яку щойно видалили (з її ID, заголовком, текстом і тегом).
     async deleteNote(id: string): Promise<Note> {
       const response: AxiosResponse<Note> = await noteInstance.delete<Note>(
         `${NOTES_ENDPOINT}/${id}`,
