@@ -9,7 +9,7 @@ import {
 import { useDebouncedCallback } from "use-debounce";
 
 //=== Імпорт модулів / Components =================
-import noteService from "../../services/notesService";
+import noteService from "../../services/noteService";
 import NoteList from "../NoteList/NoteList";
 import Pagination from "../Pagination/Pagination";
 import Modal from "../Modal/Modal";
