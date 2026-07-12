@@ -13,17 +13,15 @@ ESLint Plugin Query
 Бібліотека react-paginate у Vite версії 8+(специфіка)
 
 <!-- npm i react-paginate -->
-
-<!-- bash
 <!-- npm install
 @tanstack/react-query axios react-hot-toast react-paginate modern-normalize -->
 <!-- npm install
 -D @types/react-paginate @tanstack/react-query-devtools prettier --> -->
 
-======= МОДУЛЬ 4: React Query, Бібліотека Formik ========
-====================== Домашнє завдання №4 ==============
+======= МОДУЛЬ 5: Мутації з React Query ========
+================= Домашнє завдання №5 ================
 
-Створено репозиторій 04-react-query
+Створено репозиторій 05-notehub
 При здачі роботи надаються два посилання: на вихідні файли (репозиторій) та на робочу сторінку завдання, розгорнуту на Vercel.
 Проєкт створено за допомогою Vite.
 Під час запуску коду в консолі не повинно бути помилок або попереджень.
@@ -32,243 +30,216 @@ ESLint Plugin Query
 Файл компонента з розширенням .tsx (наприклад, App.tsx);
 Файл стилів, назва якого закінчується на .module.css, з такою самою назвою (наприклад, App.module.css).
 Для експорту компонентів використовується експорт за замовчуванням (export default).
-Загальні типи, які використовуються в кількох компонентах, винесені в окремий файл (src/types/movie.ts). Типи та інтерфейси, які стосуються лише одного компонента, оголошені безпосередньо у файлі цього компонента.
+Загальні типи, які використовуються в кількох компонентах, винесені в окремий файл (src/types/note.ts). Типи та інтерфейси, які стосуються лише одного компонента, оголошені безпосередньо у файлі цього компонента.
 Для типізації пропсів компонентів використовується interface.
 Інтерфейс для пропсів компонента називається за схемою: Ім’яКомпонентаProps (наприклад, UserCardProps).
-Усі події компонентів типізовані.
+Всі події в колбеках компонентів мають бути типізовані.
 Для виконання HTTP-запитів використовується бібліотека axios.
 TypeScript-код має бути чистим, зрозумілим і відформатованим за допомогою Prettier.
 Стилізація виконується за допомогою CSS-модулів.
 Використовується modern-normalize для уніфікації стилів у різних браузерах.
 
-==================== Пошук фільмів ====================
+Після змін, які вносите у своєму репозиторії, почекайте, будь ласка, 5 хвилин перед відправкою роботи на перевірку. Адже гітхабу необхідний час, щоб оновити версію
 
-Доповни свій застосунок пошуку фільмів пагінацією. Подивіться демо-відео роботи застосунку.
+==================== Додаток NoteHub ====================
 
-Для збереження колекції відповідей від бекенду та керування станом запитів використовуйте бібліотеку TanStack Query.
+Створіть застосунок для зберігання, створення, видалення та пошуку нотаток. Подивіться демо-відео роботи застосунку.
 
-<!-- https://tanstack.com/query/latest -->
+==================== Бекенд ====================
 
-Installation:
+Для роботи з колекцією нотаток використовуйте готовий бекенд. Документація до нього доступна за посиланням:
 
-<!-- npm i @tanstack/react-query -->
+<!-- NoteHub API -->
+<!-- https://notehub-public.goit.study/api/docs -->
 
-Recommendations# :
-It is recommended to also use our ESLint Plugin Query to help you catch bugs and inconsistencies while you code. You can install it via:
+Щоб працювати з бекендом, вам потрібно отримати персональний ключ доступу прив'язаний до вашої пошти. Це буде зручно зробити прямо в документації бекенду.
 
-<!-- npm i -D @tanstack/eslint-plugin-query -->
+З міркувань безпеки не зберігайте токен безпосередньо в коді. Замість цього використовуйте змінну оточення, наприклад:
 
------------- Налаштування DevTools -----------
+<!-- VITE_NOTEHUB_TOKEN. -->
 
-React Query Devtools – це потужний інструмент для моніторингу і налагодження запитів та кешування в реальному часі. Він дозволяє переглядати запити, їхні стани, дані, помилки та багато іншого прямо в браузері.
-Щоб додати DevTools, спершу потрібно його встановити:
+При роботі з колекцією нотаток бекенд очікує, що токен передаватиметься в заголовку Authorization у форматі рядка: "Bearer ваш_токен"
 
-<!-- npm install @tanstack/react-query-devtools -->
+Після створення токену до вашої персональної колекції буде автоматично додано 40 тестових нотаток, щоб ви могли одразу працювати з готовими даними та не витрачати час на створення їх вручну.
 
-Необхідно зробити рефакторинг логіки отримання і збереження фільмів, а також відповідних станів. Не забудь, що налаштування роботи клієнта react-query потрібно робити на верхньому рівні, тобто у файлі src/main.tsx, а використовувати відповідні хуки безпосередньо в тому компоненті, де необхідна обробка отриманих даних – у нашому випадку, у компоненті App.
+==================== Структура коду ====================
 
-<!-- import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query'
-import { getTodos, postTodo } from '../my-api'
+Ознайомтесь з документацією бекенду. Він має маршрути для отримання списку нотаток та роботі з ними (створення, видалення тощо).
+Створіть та винесіть інтерфейс Note для типізації однієї нотатки у файл src/types/note.ts і використовуйте його у компонентах.
+Функції для виконання HTTP-запитів винесіть в окремий файл src/services/noteService.ts. Типізуйте їх параметри, результат, який вони повертають, та відповідь від Axios. У вас мають бути наступні функції:
 
-// Create a client
-const queryClient = new QueryClient()
+fetchNotes : має виконувати запит для отримання колекції нотаток із сервера. Повинна підтримувати пагінацію (через параметр сторінки) та фільтрацію за ключовим словом (пошук);
+createNote: має виконувати запит для створення нової нотатки на сервері. Приймає вміст нової нотатки та повертає створену нотатку у відповіді;
+deleteNote: має виконувати запит для видалення нотатки за заданим ідентифікатором. Приймає ID нотатки та повертає інформацію про видалену нотатку у відповіді.
 
-function App() {
-  return (
-    // Provide the client to your App
-    <QueryClientProvider client={queryClient}>
-      <Todos />
-    </QueryClientProvider>
-  )
-}
+==================== Типізація ====================
 
-function Todos() {
-  // Access the client
-  const queryClient = useQueryClient()
+Загальні інтерфейси, які пов'язані з сутністю нотаток (Note, NoteTag) мають бути у файлі — src/types/note.ts.
+Інтерфейси, які описують відповіді http-запитів (FetchNotesResponse і т.д.) та параметри функцій, які виконують http-запити у — src/services/noteService.ts.
+Інтерфейси, які описують пропси компонентів у — файлах відповідних компонентів.
 
-  // Queries
-  const query = useQuery({ queryKey: ['todos'], queryFn: getTodos })
+<!-- Schemas:
+note: object {
+      id: string
+      title: string
+      content: string
+      createdAt: string / date-time
+      updatedAt: string / date-time
+      tagExpand : string
+}-->
 
-  // Mutations
-  const mutation = useMutation({
-    mutationFn: postTodo,
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ['todos'] })
-    },
-  })
+==================== Компоненти ====================
 
-  return (
-    <div>
-      <ul>
-        {query.data?.map((todo) => (
-          <li key={todo.id}>{todo.title}</li>
-        ))}
-      </ul>
+У цьому завданні вам потрібно самостійно створити та реалізувати логіку наступних компонентів:
+App – контейнер додатка
+NoteList – колекція нотаток
+Modal – універсальний компонент модального вікна, який може відображати будь-який вміст, переданий через children
+NoteForm – форма створення нотатки
+Pagination – елемент управління пагінацією
+SearchBox – текстове поле для пошуку по колекції
 
-      <button
-        onClick={() => {
-          mutation.mutate({
-            id: Date.now(),
-            title: 'Do Laundry',
-          })
-        }}
-      >
-        Add Todo
-      </button>
-    </div>
-  )
-}
+Стилі для всіх компонентів вже створені. Скопіюй їх із цього репозиторію: https://github.com/goitacademy/react-notehub-styles. Після створення своїх компонентів скопіюй відповідні .module.css файли у відповідні папки в src/components.
 
-render(<App />, document.getElementById('root')) -->
+==================== Контейнер додатка ====================
 
-==================== Пагінація фільмів ====================
-
-Сервіс TMDB підтримує пагінацію, для цього вам потрібно передати у http-запиті додатково параметр page.
-
-Тепер у відповідь бекенду вас буде цікавити не лише властивість results, а і total_page. Тому не забудьте оновити інтерфейс для типізації відповіді з бекенду.
-
-Для відображення елементів пагінації використовуйте бібліотеку React Paginate. Зверніть увагу, що вона містить готовий компонент пагінації, але без стилів. Тому додайте підготовлені нами стилі для неї у файл App.module.css:
-
-<!-- .pagination {
-    display: flex;
-    justify-content: center;
-    gap: 6px;
-    margin: 16px 0;
-    list-style: none;
-    padding: 0;
-}
-
-.pagination li {
-    width: 40px;
-    height: 40px;
-    border: 1px solid #ccc;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-.pagination a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-}
-
-.active {
-    background-color: #0a66c2;
-    color: white;
-    font-weight: bold;
-} -->
-
-Зверніть увагу, що є особливість імпорту бібліотеки react-paginate у Vite версії 8+. Для правильного імпорту та типізації використайте наступний код:
+Компонент App є контейнером для решти компонентів і поки що створює таку розмітку:
 
 <!--
-import ReactPaginateModule from "react-paginate";
-import type { ReactPaginateProps } from "react-paginate";
-import type { ComponentType } from "react";
+<div className={css.app}>
+	<header className={css.toolbar}>
+		{/* Компонент SearchBox */}
+		{/* Пагінація */}
+		{/* Кнопка створення нотатки */}
+  </header>
+</div> -->
 
-type ModuleWithDefault<T> = { default: T };
+В майбутньому в хедері буде додаткова розмітка елементів пошуку, пагінації та відкриття модального вікна для створення нотатки.
 
-const ReactPaginate = (
-  ReactPaginateModule as unknown as ModuleWithDefault<ComponentType<ReactPaginateProps>>
-).default; -->
+==================== Колекція нотаток ====================
 
-// Далі в jsx використовуємо компонент ReactPaginate звичайним чином.
-Компоненту ReactPaginate передайте наступні пропси:
+При першому завантаженні додатка користувачу потрібно відображати список його власних нотаток.
+Компонент NoteList – це список нотаток, додай його в App під хедером. Компонент NoteList має створювати DOM-елемент наступної структури:
 
-<!-- pageCount={totalPages}
-pageRangeDisplayed={5}
-marginPagesDisplayed={1}
-onPageChange={({ selected }) => setPage(selected + 1)}
-forcePage={page - 1}
-containerClassName={css.pagination}
-activeClassName={css.active}
-nextLabel="→"
-previousLabel="←" -->
+<!-- <ul className={css.list}>
+	{/* Набір елементів списку нотаток */}
+  <li className={css.listItem}>
+    <h2 className={css.title}>Note title</h2>
+    <p className={css.content}>Note content</p>
+    <div className={css.footer}>
+      <span className={css.tag}>Note tag</span>
+      <button className={css.button}>Delete</button>
+    </div>
+  </li>
+</ul> -->
 
-Пагінація має рендеритися лише тоді, коли кількість сторінок із завантаженими фільмами більше ніж 1.
+Для отримання списку нотаток з бекенду, всіх інших запитах по роботі з колекцією нотаток та збереження серверних даних використовуйте TanStack Query.
 
-<!-- ====================================================== -->
+Додайте умову, щоб компонент NoteList рендерився лише в тому випадку, якщо в колекції нотаток є хоча б один елемент.
 
-# React + TypeScript + Vite
+==================== Пагінація ====================
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Бекенд завжди повертає пагіновану колекцію нотаток. Тому потрібно додати до компонента App компонент Pagination, який надає користувачеві можливість перемикатися між сторінками колекції. Реалізуйте компонент Pagination з використанням бібліотеки React Paginate.
 
-Currently, two official plugins are available:
+До http-запиту потрібно додати параметри page та perPage. Наприклад:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+<!-- GET https://notehub-public.goit.study/api/notes?page=1&perPage=12 -->
 
-## React Compiler
+Додайте умову, щоб компонент Pagination рендерився лише в тому випадку, якщо кількість сторінок колекції нотаток більше 1.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+==================== Створення нової нотатки ====================
 
-Note: This will impact Vite dev & build performances.
+Додайте в хедер застосунку кнопку для створення нової нотатки:
 
-## Expanding the ESLint configuration
+<!-- <button className={css.button}>Create note +</button> -->
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+При натисканні на цю кнопку має відкриватись модальне вікно Modal з формою NoteForm. Компонент Modal має створювати DOM-елемент наступної структури:
 
-```js
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
+<!--
+<div
+  className={css.backdrop}
+  role="dialog"
+  aria-modal="true"
+>
+  <div className={css.modal}>
+    {/* */}
+  </div>
+</div> -->
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Модальне вікно має створюватись через createPortal, щоб рендерити модалку поза межами основного дерева компонентів, та закриватися при кліку на бекдроп і натисканням на клавішу Escape.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+Компонент NoteForm має створювати DOM-елемент наступної структури:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+<!--
+<form className={css.form}>
+  <div className={css.formGroup}>
+    <label htmlFor="title">Title</label>
+    <input id="title" type="text" name="title" className={css.input} />
+    <span name="title" className={css.error} />
+  </div>
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
+  <div className={css.formGroup}>
+    <label htmlFor="content">Content</label>
+    <textarea
+      id="content"
+      name="content"
+      rows={8}
+      className={css.textarea}
+    />
+    <span name="content" className={css.error} />
+  </div>
 
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+  <div className={css.formGroup}>
+    <label htmlFor="tag">Tag</label>
+    <select id="tag" name="tag" className={css.select}>
+      <option value="Todo">Todo</option>
+      <option value="Work">Work</option>
+      <option value="Personal">Personal</option>
+      <option value="Meeting">Meeting</option>
+      <option value="Shopping">Shopping</option>
+    </select>
+    <span name="tag" className={css.error} />
+  </div>
+
+  <div className={css.actions}>
+    <button type="button" className={css.cancelButton}>
+      Cancel
+    </button>
+    <button
+      type="submit"
+      className={css.submitButton}
+      disabled=false
+    >
+      Create note
+    </button>
+  </div>
+</form> -->
+
+Для керування станом форми, валідації та обробки сабміту слід використовувати бібліотеку Formik.
+
+Додай валідацію значень полів форми за допомогою Yup:
+заголовок нотатки має мати мінімальну довжину символів 3, максимальну – 50 та бути обов'язковим полем;
+контент нотатки має мати максимальну довжину символів 500;
+тег нотатки має бути одним із таких значень: Todo, Work, Personal, Meeting, Shopping, і є обов'язковим полем.
+
+==================== Видалення нотатки ====================
+
+При натисканні на кнопку Delete в елементі списку нотаток, відповідна нотатка має видалятися на бекенді та оновлюватись збережені серверні дані.
+
+==================== Пошук ====================
+
+Додайте в хедер застосунку компонент SearchBox. Він має створювати DOM-елемент наступної структури:
+
+<!-- <input
+  className={css.input}
+  type="text"
+  placeholder="Search notes"
+ /> -->
+
+Користувач може шукати нотатки за допомогою текстового поля, при зміні значення якого на бекенд відправляється запит для отримання нотаток, які підходять під пошук. Для цього до запиту потрібно додати параметр search із текстовим значенням для пошуку:
+
+<!-- GET https://notehub-public.goit.study/api/notes?search=mysearchtext -->
+
+обов'язково зробіть відкладений пошук з use-debounce, щоб не виконувати запит на кожний введений символ. Хук useDebouncedCallback варто використовувати саме в Арр.
+
+==================== Додатково ====================
+Рекомендуємо створити окремі компоненти для відображення індикатора завантаження під час виконання HTTP-запитів, повідомлень про помилки та інших статусів запиту.
