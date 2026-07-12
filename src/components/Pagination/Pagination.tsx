@@ -1,13 +1,16 @@
 import { useState, useEffect, useCallback } from "react";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
-import css from "./Pagination.module.css";
 
+// специфіка імпорту react-paginate
 import type { ComponentType } from "react";
 import ReactPaginateModule from "react-paginate";
 import type { ReactPaginateProps } from "react-paginate";
 
+import css from "./Pagination.module.css";
+
 type ModuleWithDefault<T> = { default: T };
 
+// Розпаковуємо дефолтний експорт react-paginate для стабільної сумісності з Vite
 const ReactPaginate = (
   ReactPaginateModule as unknown as ModuleWithDefault<
     ComponentType<ReactPaginateProps>
@@ -20,6 +23,7 @@ interface PaginationProps {
   onPageChange: (selectedPage: number) => void;
 }
 
+// ГРАФІЧНІ КОНСТАНТИ: векторні іконки "react-icons" для легкості заміни за необхідності
 const leftArrow = <AiOutlineLeft size={16} />;
 const rightArrow = <AiOutlineRight size={16} />;
 
@@ -28,24 +32,30 @@ export default function Pagination({
   currentPage,
   onPageChange,
 }: PaginationProps) {
+  // Локальні стани для відстеження натискання стрілок клавіатури (для динамічного підсвічування)
   const [isLeftPressed, setIsLeftPressed] = useState<boolean>(false);
   const [isRightPressed, setIsRightPressed] = useState<boolean>(false);
 
+  // обробник переходу на попередню сторінку (для мишки та клавіатури)
   const handlePrevClick = useCallback((): void => {
     if (currentPage > 1) {
       onPageChange(currentPage - 1);
     }
   }, [currentPage, onPageChange]);
 
+  // обробник переходу на наступну сторінку (для мишки та клавіатури)
   const handleNextClick = useCallback((): void => {
     if (currentPage < pageCount) {
       onPageChange(currentPage + 1);
     }
   }, [currentPage, pageCount, onPageChange]);
 
+  // Ефект прослуховування подій клавіатури для навігації стрілками
   useEffect(() => {
+    // Обробляємо подію keydown (кнопка натиснута), коли користувач фізично затискає стрілки вліво/вправо
     const handleKeyDown = (event: KeyboardEvent): void => {
       const activeElement = document.activeElement;
+      // Блокуємо слухач подій та гортання сторінок, якщо користувач зараз пише текст в інпуті чи формі
       if (
         activeElement?.tagName === "INPUT" ||
         activeElement?.tagName === "TEXTAREA"
@@ -53,6 +63,7 @@ export default function Pagination({
         return;
       }
 
+      // Перевіряємо натискання визначених клавіш (вліво/вправо), змінюємо стан підсвічування та гортаємо сторінку
       if (event.key === "ArrowLeft" && currentPage > 1) {
         setIsLeftPressed(true);
         handlePrevClick();
@@ -63,6 +74,7 @@ export default function Pagination({
       }
     };
 
+    // обробляємо подію keyup (кнопка вверх - "відпустили" клавішу на клавіатурі), щоб вимкнути підсвічування
     const handleKeyUp = (event: KeyboardEvent): void => {
       if (event.key === "ArrowLeft") setIsLeftPressed(false);
       if (event.key === "ArrowRight") setIsRightPressed(false);
@@ -72,11 +84,13 @@ export default function Pagination({
     window.addEventListener("keyup", handleKeyUp);
 
     return () => {
+      // Очищаємо слухачі подій при розмонтуванні компонента
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
   }, [currentPage, pageCount, handlePrevClick, handleNextClick]);
 
+  // Обробляємо клік мишкою по конкретній цифрі сторінки (переводимо індекс 0 у сторінку 1)
   const handlePageClick = (selectedItem: { selected: number }): void => {
     onPageChange(selectedItem.selected + 1);
   };
@@ -85,6 +99,7 @@ export default function Pagination({
     <div className={css.paginationWrapper}>
       <ReactPaginate
         breakLabel="..."
+        // Огортаємо праву стрілку в тег і блокуємо спливання івенту для коректного кліку мишкою
         nextLabel={
           <span
             onClick={(event: React.MouseEvent) => {
@@ -95,6 +110,7 @@ export default function Pagination({
             {rightArrow}
           </span>
         }
+        // Огортаємо ліву стрілку в тег і блокуємо спливання івенту для коректного кліку мишкою
         previousLabel={
           <span
             onClick={(event: React.MouseEvent) => {
@@ -112,141 +128,10 @@ export default function Pagination({
         forcePage={currentPage - 1}
         containerClassName={css.pagination}
         activeClassName={css.active}
+        // Динамічно додаємо класи неактивного стану або затиснутої стрілки з клавіатури
         previousClassName={`${currentPage === 1 ? css.disabledPage : ""} ${isLeftPressed ? css.arrowPressed : ""}`}
         nextClassName={`${currentPage === pageCount ? css.disabledPage : ""} ${isRightPressed ? css.arrowPressed : ""}`}
       />
     </div>
   );
 }
-
-// import { useState, useEffect, useCallback } from "react";
-// import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
-
-// // --- бібліотека react-paginate у Vite версії 8+(специфіка)
-// import ReactPaginateModule from "react-paginate";
-// import type { ReactPaginateProps } from "react-paginate";
-// import type { ComponentType } from "react";
-
-// import css from "./Pagination.module.css";
-
-// interface PaginationProps {
-//   pageCount: number;
-//   currentPage: number;
-//   onPageChange: (selectedPage: number) => void;
-// }
-
-// export default function Pagination({
-//   pageCount,
-//   currentPage,
-//   onPageChange,
-// }: PaginationProps) {
-//   // Додаємо локальні стани для відстеження натискання клавіш клавіатури
-//   const [isLeftPressed, setIsLeftPressed] = useState<boolean>(false);
-//   const [isRightPressed, setIsRightPressed] = useState<boolean>(false);
-
-//   // пагінація
-//   const ReactPaginate: ComponentType<ReactPaginateProps> =
-//     (
-//       ReactPaginateModule as unknown as {
-//         default: ComponentType<ReactPaginateProps>;
-//       }
-//     ).default || ReactPaginateModule;
-
-//   // Обробляємо клік попередньої сторінки
-//   const handlePrevClick = useCallback((): void => {
-//     if (currentPage > 1) {
-//       onPageChange(currentPage - 1);
-//     }
-//   }, [currentPage, onPageChange]);
-
-//   // Обробляємо клік наступної сторінки
-//   const handleNextClick = useCallback((): void => {
-//     if (currentPage < pageCount) {
-//       onPageChange(currentPage + 1);
-//     }
-//   }, [currentPage, pageCount, onPageChange]);
-
-//   // Створюємо ефект для прослуховування клавіш стрілок клавіатури,
-//   // обробка події "натиснуто кнопку" (клавіша вниз) на клавіатурі
-//   useEffect(() => {
-//     const handleKeyDown = (event: KeyboardEvent): void => {
-//       const activeElement = document.activeElement;
-//       if (
-//         activeElement?.tagName === "INPUT" ||
-//         activeElement?.tagName === "TEXTAREA"
-//       ) {
-//         return;
-//       }
-
-//       // Перевіряємо натискання клавіш клавіатури ВЛІВО ТА ВПРАВО
-//       if (event.key === "ArrowLeft" && currentPage > 1) {
-//         setIsLeftPressed(true);
-//         handlePrevClick();
-//       }
-//       if (event.key === "ArrowRight" && currentPage < pageCount) {
-//         setIsRightPressed(true);
-//         handleNextClick();
-//       }
-//     };
-
-//     // обробка події "віджато кнопку" (клавіша вверх) на клавіатурі
-//     const handleKeyUp = (event: KeyboardEvent): void => {
-//       if (event.key === "ArrowLeft") setIsLeftPressed(false);
-//       if (event.key === "ArrowRight") setIsRightPressed(false);
-//     };
-
-//     window.addEventListener("keydown", handleKeyDown);
-//     window.addEventListener("keyup", handleKeyUp);
-
-//     // прибираємо слухачів подій при розмонтуванні компонента
-//     return () => {
-//       window.removeEventListener("keydown", handleKeyDown);
-//       window.removeEventListener("keyup", handleKeyUp);
-//     };
-//   }, [currentPage, pageCount, handlePrevClick, handleNextClick]);
-
-//   // Обробляємо клік по цифрах пагінації
-//   const handlePageClick = (selectedItem: { selected: number }): void => {
-//     onPageChange(selectedItem.selected + 1);
-//   };
-
-//   return (
-//     <div className={css.paginationWrapper}>
-//       {/* пагінація З БІБЛІОТЕКИ react-paginate */}
-//       <ReactPaginate
-//         breakLabel="..."
-//         nextLabel={
-//           <span
-//             onClick={(event: React.MouseEvent) => {
-//               event.stopPropagation();
-//               handleNextClick();
-//             }}
-//           >
-//             <AiOutlineRight size={16} />
-//             {/*стрілка з БІБЛІОТЕКИ react-icons/ai */}
-//           </span>
-//         }
-//         previousLabel={
-//           <span
-//             onClick={(event: React.MouseEvent) => {
-//               event.stopPropagation();
-//               handlePrevClick();
-//             }}
-//           >
-//             <AiOutlineLeft size={16} />
-//             {/*стрілка з БІБЛІОТЕКИ react-icons/ai */}
-//           </span>
-//         }
-//         onPageChange={handlePageClick}
-//         pageRangeDisplayed={3}
-//         marginPagesDisplayed={1}
-//         pageCount={pageCount}
-//         forcePage={currentPage - 1}
-//         containerClassName={css.pagination}
-//         activeClassName={css.active}
-//         previousClassName={`${currentPage === 1 ? css.disabledPage : ""} ${isLeftPressed ? css.arrowPressed : ""}`}
-//         nextClassName={`${currentPage === pageCount ? css.disabledPage : ""} ${isRightPressed ? css.arrowPressed : ""}`}
-//       />
-//     </div>
-//   );
-// }
