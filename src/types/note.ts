@@ -11,21 +11,6 @@ export interface Note {
   updatedAt: string;
 }
 
-// Типізація параметрів для виконання запиту на пошук нотатків
-export interface FetchNotesParams {
-  page: number;
-  perPage: number;
-  search?: string;
-}
-
-// Типізація відповіді від сервера щодо пошуку нотатків
-export interface FetchNotesResponse {
-  notes: Note[];
-  totalNotes: number;
-  totalPages: number;
-  currentPage: number;
-}
-
 // Типізація даних для створення нової нотатки
 export interface CreateNoteData {
   title: string;
